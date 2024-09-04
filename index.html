@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Observer API</title>
+    <link rel="stylesheet" href="index.css">
+    <template id="card_template">
+        <article class="card">
+            <h3 class="card__title"></h3>
+            <section class='card__body'>
+            </section>
+        </article>
+    </template>
+</head>
+<body>
+    <main id="container">
+        <div id="list">
+        </div>
+        <div id="bottom-observer">
+            Infinte Scrolling Loading......
+        </div>
+    </main>
+
+    <script>
+        const [template, list, observerElement] = document.querySelectorAll('#card_template, #list, #bottom-observer')
+
+        function appendList(title, body) {
+            const fragment = new DocumentFragment()
+
+            const element = template.content.cloneNode(true).firstElementChild;
+            const [cardTitle, cardBody] = element.querySelectorAll('.card__title, .card__body');
+            [cardTitle.textContent, cardBody.textContent] = [title, body];
+
+            fragment.appendChild(element)
+            list.appendChild(fragment)
+        }
+
+        function getData() {
+            setTimeout(() => {
+                const fakeData = ['You can do it!', 'You are the best!', 'You are amazing!'].map(sentence => ({ author: 'Me', quote: sentence }))
+                fakeData.forEach(item => {
+                    appendList(item.author, item.quote)
+                })
+            }, 500)
+            
+        }
+
+        function init() {
+            const callback = ([entry]) => {
+                if(entry.isIntersecting) {
+                    console.log('isIntersecting!!!')
+                    getData()
+                }
+            }
+
+            const config = {
+                threshold: 0.2
+            }
+
+            const observer = new IntersectionObserver(callback, config)
+            observer.observe(observerElement)
+        }
+
+
+        init()
+
+    </script>
+
+</body>
+</html>
