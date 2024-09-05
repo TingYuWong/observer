@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Observer API</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <main id="container">
+        <div class="box">A</div>
+        <div class="box">B</div>
+        <div class="box">C</div>
+        <div class="box">D</div>
+    </main>
+
+    <script>
+        function callback(entries) {
+            for(const entry of entries) {
+                const { borderBoxSize: [{ inlineSize, blockSize }], target } = entry;
+                if(inlineSize < 150 && blockSize < 150) {
+                    target.style.borderRadius = "100%"
+                } else {
+                    target.style.borderRadius = "unset"
+                }
+            }
+        }  
+
+        const observer = new ResizeObserver(callback)
+        const elements = document.querySelectorAll(".box")
+        elements.forEach(ele => observer.observe(ele))
+
+    </script>
+
+</body>
+</html>
